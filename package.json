@@ -1,0 +1,24 @@
+{
+  "name": "dom-treeadapter",
+  "version": "0.1.0",
+  "description": "A parse5-compatible TreeAdapter for the DOM",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nrkn/dom-treeadapter.git"
+  },
+  "keywords": [
+    "dom",
+    "treeadapter",
+    "parse5"
+  ],
+  "author": "Nik Coughlin <nrkn.com@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nrkn/dom-treeadapter/issues"
+  },
+  "homepage": "https://github.com/nrkn/dom-treeadapter#readme",
+  "dependencies": {
+    "nodetype-enum": "^1.1.1"
+  }
+}
