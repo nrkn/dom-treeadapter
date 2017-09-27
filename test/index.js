@@ -141,6 +141,16 @@ describe( 'dom-treeadapter', () => {
       assert.strictEqual( p.innerHTML, 'foo<span> bar</span>' )
     })
 
+    it( 'adapter.insertTextBefore appends to existing text', () => {
+      const dom = parse5.parseFragment( '<p>foo <span></span></p>', options )
+      const p = dom.querySelector( 'p' )
+      const existing = p.querySelector( 'span' )
+
+      adapter.insertTextBefore( p, 'bar', existing )
+
+      assert.strictEqual( p.firstChild.textContent, 'foo bar' )
+    })
+
     it( 'adapter.adoptAttributes', () => {
       const attrs = [
         { name: 'id', value: 'foo' },
