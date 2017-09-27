@@ -67,37 +67,33 @@ const Adapter = document => {
     detachNode: node => node.remove(),
 
     insertText: ( parentNode, text ) => {
-      const children = Array.from( parentNode.childNodes )
-      const existing = children[ children.length - 1 ]
-      const isLastText = existing && existing.nodeType === TEXT_NODE
+      if( 'insertAdjacentText' in parentNode ) {
+        parentNode.insertAdjacentText( 'beforeend', text )
+      } else {
+        const last = parentNode.lastChild
 
-      if( isLastText ){
-        existing.nodeValue += text
-
-        return
+        if( last && last.nodeType === TEXT_NODE ){
+          last.appendData( text )
+        } else {
+          parentNode.appendChild( document.createTextNode( text ) )
+        }
       }
-
-      parentNode.appendChild( document.createTextNode( text ) )
     },
 
     insertTextBefore: ( parentNode, text, referenceNode ) => {
-      const children = Array.from( parentNode.childNodes )
+      if( 'insertAdjacentText' in referenceNode ) {
+        referenceNode.insertAdjacentText( 'beforebegin', text )
+      } else if ( referenceNode.nodeType === TEXT_NODE ) {
+        referenceNode.insertData( 0, text )
+      } else {
+        const prev = referenceNode.previousSibling
 
-      const index = children.indexOf( referenceNode )
-
-      if( index === -1 )
-        throw new Error( 'Reference node not found' )
-
-      const reference = children[ index ]
-      const isRefText = reference && reference.nodeType === TEXT_NODE
-
-      if( isRefText ){
-        reference.nodeValue = text + reference.nodeValue
-
-        return
+        if ( prev && prev.nodeType === TEXT_NODE ) {
+          prev.appendData( text )
+        } else {
+          parentNode.insertBefore( document.createTextNode( text ), referenceNode )
+        }
       }
-
-      parentNode.insertBefore( document.createTextNode( text ), referenceNode )
     },
 
     adoptAttributes: ( recipientNode, attrs ) => {
