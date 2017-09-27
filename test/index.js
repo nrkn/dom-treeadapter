@@ -102,7 +102,7 @@ describe( 'dom-treeadapter', () => {
 
       const mode = adapter.getDocumentMode( dom )
 
-      assert.strictEqual( mode, 'noquirks' )
+      assert.strictEqual( mode, 'no-quirks' )
     })
 
     it( 'adapter.getDocumentMode quirks', () => {

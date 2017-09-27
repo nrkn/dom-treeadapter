@@ -62,7 +62,7 @@ const Adapter = document => {
     setDocumentMode: () => {},
 
     getDocumentMode: document =>
-      document.compatMode === 'CSS1Compat' ? 'noquirks' : 'quirks',
+      document.compatMode === 'CSS1Compat' ? 'no-quirks' : 'quirks',
 
     detachNode: node => node.remove(),
 
