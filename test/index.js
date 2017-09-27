@@ -26,6 +26,13 @@ const fixtures = fixtureNames.reduce( ( obj, name ) => {
   return obj
 }, {} )
 
+const mixinInsertAdjacentText = element => {
+  element.insertAdjacentText = ( type, text ) => {
+    text = String( text ).replace( /&/g, '&amp;' ).replace( /</g, '&lt;' )
+    element.insertAdjacentHTML( type, text )
+  }
+}
+
 describe( 'dom-treeadapter', () => {
   describe( 'parsing', () => {
     fixtureNames.forEach( name => {
@@ -149,6 +156,28 @@ describe( 'dom-treeadapter', () => {
       adapter.insertTextBefore( p, 'bar', existing )
 
       assert.strictEqual( p.firstChild.textContent, 'foo bar' )
+    })
+
+    it( 'adapter.insertText native inserts after el', () => {
+      const dom = parse5.parseFragment( '<p><span> bar</span></p>', options )
+      const p = dom.querySelector( 'p' )
+      const existing = p.firstChild
+
+      mixinInsertAdjacentText( p )
+      adapter.insertText( p, 'foo', existing )
+
+      assert.strictEqual( p.innerHTML, '<span> bar</span>foo' )
+    })
+
+    it( 'adapter.insertTextBefore native inserts before el', () => {
+      const dom = parse5.parseFragment( '<p><span> bar</span></p>', options )
+      const p = dom.querySelector( 'p' )
+      const existing = p.firstChild
+
+      mixinInsertAdjacentText( existing )
+      adapter.insertTextBefore( p, 'foo', existing )
+
+      assert.strictEqual( p.innerHTML, 'foo<span> bar</span>' )
     })
 
     it( 'adapter.adoptAttributes', () => {

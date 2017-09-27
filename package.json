@@ -1,6 +1,6 @@
 {
   "name": "dom-treeadapter",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "A parse5-compatible TreeAdapter for the DOM",
   "main": "index.js",
   "scripts": {
