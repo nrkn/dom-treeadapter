@@ -35,12 +35,19 @@ const Adapter = document => {
     insertBefore: ( parentNode, newNode, referenceNode ) =>
       parentNode.insertBefore( newNode, referenceNode ),
 
-    setTemplateContent: ( templateElement, contentElement ) =>
-      templateElement.content = contentElement,
+    // templateElement.content is readonly
+    setTemplateContent: ( templateElement, fragment ) => {
+      templateElement.innerHTML = ''
+
+      templateElement.appendChild( fragment )
+    },
 
     getTemplateContent: templateElement => templateElement.content,
 
     setDocumentType: ( document, name, publicId, systemId ) => {
+      publicId = publicId || ''
+      systemId = systemId || ''
+
       const doctype = document.implementation.createDocumentType( name, publicId, systemId )
 
       if( document.doctype ){
@@ -55,16 +62,42 @@ const Adapter = document => {
     setDocumentMode: () => {},
 
     getDocumentMode: document =>
-      document.compatMode === 'CSS1Compat' ? 'no-quirks' : 'quirks',
+      document.compatMode === 'CSS1Compat' ? 'noquirks' : 'quirks',
 
     detachNode: node => node.remove(),
 
     insertText: ( parentNode, text ) => {
-      parentNode.insertAdjacentText( 'beforeend', text );
+      const children = Array.from( parentNode.childNodes )
+      const existing = children[ children.length - 1 ]
+      const isLastText = existing && existing.nodeType === TEXT_NODE
+
+      if( isLastText ){
+        existing.nodeValue += text
+
+        return
+      }
+
+      parentNode.appendChild( document.createTextNode( text ) )
     },
 
     insertTextBefore: ( parentNode, text, referenceNode ) => {
-      referenceNode.insertAdjacentText( 'beforebegin', text );
+      const children = Array.from( parentNode.childNodes )
+
+      const index = children.indexOf( referenceNode )
+
+      if( index === -1 )
+        throw new Error( 'Reference node not found' )
+
+      const reference = children[ index ]
+      const isRefText = reference && reference.nodeType === TEXT_NODE
+
+      if( isRefText ){
+        reference.nodeValue = text + reference.nodeValue
+
+        return
+      }
+
+      parentNode.insertBefore( document.createTextNode( text ), referenceNode )
     },
 
     adoptAttributes: ( recipientNode, attrs ) => {

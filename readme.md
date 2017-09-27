@@ -10,16 +10,29 @@ See [TreeAdapter at parse5 documentation](https://github.com/inikulin/parse5/wik
 
 ## Usage
 
+Browser:
+
 ```javascript
 const parse5 = require( 'parse5' )
 const Adapter = require( 'dom-treeadapter' )
 
-// Needs an interface with .createElement etc.
-// You can use window.document in the browser:
 const adapter = Adapter( window.document )
-// or a jsdom() instance:
-const jsdom = require( 'jsdom' ).jsdom
-const adapter2 = Adapter( jsdom() )
 
-const domNodes = parse5.parse( '<div></div>', { treeAdapter: adapter } )
+const domNodes = parse5.parseFragment( '<div></div>', { treeAdapter: adapter } )
+```
+
+jsdom:
+
+```javascript
+const parse5 = require( 'parse5' )
+const Adapter = require( 'dom-treeadapter' )
+const jsdom = require( 'jsdom' )
+
+const { JSDOM } = jsdom
+const dom = new JSDOM( '<!doctype html>' )
+const { document } = dom.window
+
+const adapter = Adapter( document )
+
+const domNodes = parse5.parseFragment( '<div></div>', { treeAdapter: adapter } )
 ```
