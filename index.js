@@ -23,7 +23,7 @@ const Adapter = document => {
     createDocumentFragment: () => document.createDocumentFragment(),
 
     createElement: ( tagName, nameSpaceUri, attrs ) => {
-      const element = document.createElement( tagName )
+      const element = document.createElementNS( nameSpaceUri, tagName )
       attrs.forEach( pair => element.setAttribute( pair.name, pair.value ) )
       return element
     },
