@@ -60,37 +60,11 @@ const Adapter = document => {
     detachNode: node => node.remove(),
 
     insertText: ( parentNode, text ) => {
-      const children = Array.from( parentNode.childNodes )
-      const existing = children[ children.length - 1 ]
-      const isLastText = existing && existing.nodeType === TEXT_NODE
-
-      if( isLastText ){
-        existing.nodeValue += text
-
-        return
-      }
-
-      parentNode.appendChild( document.createTextNode( text ) )
+      parentNode.insertAdjacentText( 'beforeend', text );
     },
 
     insertTextBefore: ( parentNode, text, referenceNode ) => {
-      const children = Array.from( parentNode.childNodes )
-
-      const index = children.indexOf( referenceNode )
-
-      if( index === -1 )
-        throw new Error( 'Reference node not found' )
-
-      const reference = children[ index ]
-      const isRefText = reference && reference.nodeType === TEXT_NODE
-
-      if( isRefText ){
-        reference.nodeValue += text
-
-        return
-      }
-
-      parentNode.insertBefore( document.createTextNode( text ), referenceNode )
+      referenceNode.insertAdjacentText( 'beforebegin', text );
     },
 
     adoptAttributes: ( recipientNode, attrs ) => {
