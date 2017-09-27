@@ -1,8 +1,13 @@
 'use strict'
 
-const nodeType = require( 'nodetype-enum' )
-
 const Adapter = document => {
+  const {
+    TEXT_NODE,
+    DOCUMENT_TYPE_NODE,
+    ELEMENT_NODE,
+    COMMENT_NODE,
+  } = document
+
   const adapter = {
     createDocument: () => {
       const doc = document.implementation.createHTMLDocument( '' )
@@ -18,11 +23,8 @@ const Adapter = document => {
     createDocumentFragment: () => document.createDocumentFragment(),
 
     createElement: ( tagName, nameSpaceUri, attrs ) => {
-      const element = document.createElement( tagName )
-
-      if( Array.isArray( attrs ) && attrs.length )
-        attrs.forEach( pair => element.setAttribute( pair.name, pair.value ) )
-
+      const element = document.createElementNS( nameSpaceUri, tagName )
+      attrs.forEach( pair => element.setAttribute( pair.name, pair.value ) )
       return element
     },
 
@@ -50,44 +52,19 @@ const Adapter = document => {
       }
     },
 
-    setQuirksMode: document => {},
+    setDocumentMode: () => {},
 
-    isQuirksMode: document => document.compatMode === 'BackCompat',
+    getDocumentMode: document =>
+      document.compatMode === 'CSS1Compat' ? 'no-quirks' : 'quirks',
 
     detachNode: node => node.remove(),
 
     insertText: ( parentNode, text ) => {
-      const children = Array.from( parentNode.childNodes )
-      const existing = children[ children.length - 1 ]
-      const isLastText = existing && existing.nodeType === nodeType.text
-
-      if( isLastText ){
-        existing.nodeValue += text
-
-        return
-      }
-
-      parentNode.appendChild( document.createTextNode( text ) )
+      parentNode.insertAdjacentText( 'beforeend', text );
     },
 
     insertTextBefore: ( parentNode, text, referenceNode ) => {
-      const children = Array.from( parentNode.childNodes )
-
-      const index = children.indexOf( referenceNode )
-
-      if( index === -1 )
-        throw new Error( 'Reference node not found' )
-
-      const reference = children[ index ]
-      const isRefText = reference && reference.nodeType === nodeType.text
-
-      if( isRefText ){
-        reference.nodeValue += text
-
-        return
-      }
-
-      parentNode.insertBefore( document.createTextNode( text ), referenceNode )
+      referenceNode.insertAdjacentText( 'beforebegin', text );
     },
 
     adoptAttributes: ( recipientNode, attrs ) => {
@@ -104,7 +81,7 @@ const Adapter = document => {
 
     getAttrList: node => Array.from( node.attributes ),
 
-    getTagName: element => element.tagName,
+    getTagName: element => element.localName,
 
     getNamespaceURI: element => element.namespaceURI,
 
@@ -118,13 +95,13 @@ const Adapter = document => {
 
     getDocumentTypeNodeSystemId: doctypeNode => doctypeNode.systemId,
 
-    isTextNode: node => node.nodeType === nodeType.text,
+    isTextNode: node => node.nodeType === TEXT_NODE,
 
-    isCommentNode: node => node.nodeType === nodeType.comment,
+    isCommentNode: node => node.nodeType === COMMENT_NODE,
 
-    isDocumentTypeNode: node => node.nodeType === nodeType.documentType,
+    isDocumentTypeNode: node => node.nodeType === DOCUMENT_TYPE_NODE,
 
-    isElementNode: node => node.nodeType === nodeType.element
+    isElementNode: node => node.nodeType === ELEMENT_NODE,
   }
 
   return adapter
