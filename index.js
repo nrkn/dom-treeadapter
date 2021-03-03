@@ -52,8 +52,6 @@ const Adapter = document => {
 
       if( document.doctype ){
         document.replaceChild( doctype, document.doctype )
-      } else if( document.childNodes && document.childNodes.length ) {
-        document.insertBefore( doctype, document.childNodes[ 0 ] )
       } else {
         document.appendChild( doctype )
       }

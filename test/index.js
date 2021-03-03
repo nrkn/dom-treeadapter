@@ -6,7 +6,7 @@ const parse5 = require( 'parse5' )
 const Adapter = require( '../' )
 const document = require( './fixtures/document' )
 
-const { parse, parseDocument, serialize, stringify } = domUtils
+const { parse, parseDocument, serialize } = domUtils
 
 const adapter = Adapter( document )
 const options = { treeAdapter: adapter }
@@ -42,6 +42,7 @@ describe( 'dom-treeadapter', () => {
 
       const roundTrip = html => {
         const dom = parse( html, options )
+        //const str = parse5.serialize( dom, options )
         const str = parse5.serialize( dom, options )
 
         return parse( str, options )
@@ -49,10 +50,11 @@ describe( 'dom-treeadapter', () => {
 
       it( 'parses ' + name, () => {
         const { html, expect } = fixture
+        
         const dom = roundTrip( html )
         const serialized = serialize( dom )
 
-        assert.deepEqual( serialized, expect )
+        assert.deepStrictEqual( serialized, expect )
       })
     })
   })
