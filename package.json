@@ -25,7 +25,7 @@
   "devDependencies": {
     "@mojule/dom-utils": "^0.1.3",
     "istanbul": "^0.4.5",
-    "jsdom": "^11.2.0",
+    "jsdom": "^16.5.0",
     "mocha": "^8.3.0",
     "parse5": "^6.0.1"
   }
